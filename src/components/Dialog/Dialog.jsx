@@ -4,14 +4,15 @@ import PropTypes from 'prop-types'
 import Modal from '../Modal'
 import Grow from '../Grow'
 import Slide from '../Slide'
-import Icon from '../Icon'
+import { IconButton } from '../Button'
 
 import styled from 'styled-components'
 
 const DialogWrap = styled.div`
   background-color: white;
   outline: none;
-  ${props => !props.width && `min-width: 500px;`}
+  ${props => !props.width && `min-width: 400px;`}
+  ${props => !props.width && `max-width: 640px;`}
   ${props => props.width && `width: ${props.width};`}
   box-shadow:
     ${props => {
@@ -44,9 +45,36 @@ const Header = styled.div`
 const H1 = styled.h1`
   color: #007fa4;
   font-family: 'Adobe Garamond Pro', Garamond, Georgia, serif;
+  font-weight: normal;
   line-height: 1em;
+  padding: 40px ${props => (props.hasCloseButton ? 104 : 40)}px ${props => (props.hasContent ? 32 : 40)}px 40px;
+  margin: 0;
 `
-const CloseButton = styled.button``
+const CloseButton = styled(IconButton).attrs({ name: 'close' })`
+  position: absolute;
+  top: 32px;
+  right: 32px;
+`
+const DialogContent = styled.div`
+  padding: ${props => (props.hasTitle || props.noPadding ? 0 : 40)}px
+    ${props => {
+      if (props.hasCloseButton && !props.hasTitle && !props.noPadding) return 104
+      if (props.noPadding) return 0
+      return 40
+    }}px
+    ${props => {
+      if (props.noPadding) return 0
+      if (props.hasActions) return 32
+      return 40
+    }}px
+    ${props => (props.noPadding ? 0 : 40)}px;
+`
+const DialogActions = styled.div`
+  padding: 32px 40px;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: flex-end;
+`
 
 // endregion
 
@@ -74,6 +102,7 @@ class Dialog extends React.Component {
     const {
       open,
       title,
+      actions,
       onClose,
       children,
       hideCloseButton,
@@ -81,6 +110,7 @@ class Dialog extends React.Component {
       BackdropProps,
       disableBackdropClick,
       disableEscapeKeyDown,
+      noPadding,
       onEscapeKeyDown,
       onEnter,
       onEntering,
@@ -140,14 +170,17 @@ class Dialog extends React.Component {
         >
           <DialogWrap width={width} position={position}>
             <Header>
-              {title && <H1>{title}</H1>}
-              {!hideCloseButton && (
-                <CloseButton onClick={onClose}>
-                  <Icon name="close" />
-                </CloseButton>
+              {title && (
+                <H1 hasContent={children} hasCloseButton={!hideCloseButton}>
+                  {title}
+                </H1>
               )}
+              {!hideCloseButton && <CloseButton onClick={onClose} />}
             </Header>
-            <div>{children}</div>
+            <DialogContent noPadding={noPadding} hasTitle={title} hasActions={actions} hasCloseButton={!hideCloseButton}>
+              {children}
+            </DialogContent>
+            {actions && <DialogActions>{actions}</DialogActions>}
           </DialogWrap>
         </TransitionComponent>
       </Modal>

@@ -178,6 +178,7 @@ class UserMenu extends React.Component {
           position={{ x: 'right', y: 'stretch' }}
           zIndex={800}
           hideCloseButton
+          noPadding
           open={showMenu}
           onClose={this.closeMenu}
         >
