@@ -6,6 +6,7 @@ export const IconBtn = styled.button`
   width: 40px;
   height: 40px;
   padding: 0;
+  background-color: transparent;
   border: 0;
   outline: 0;
   border-radius: 40px;
@@ -17,6 +18,10 @@ export const IconBtn = styled.button`
   }
   &:active {
     background: rgba(0, 0, 0, 0.15);
+  }
+
+  & * {
+    pointer-events: none;
   }
 `
 

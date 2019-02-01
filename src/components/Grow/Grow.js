@@ -10,7 +10,7 @@ const styles = {
   default: {
     opacity: 0,
     transform: getScale(0.75),
-    transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
+    transition: 'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms'
   },
   entering: { opacity: 1, transform: getScale(1) },
   entered: { opacity: 1, transform: `${getScale(1)} translateZ(0)` },
@@ -63,6 +63,6 @@ Grow.propTypes = {
   timeout: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ enter: PropTypes.number, exit: PropTypes.number })])
 }
 
-Grow.defaultProps = { timeout: 200 }
+Grow.defaultProps = { timeout: 250 }
 
 export default Grow

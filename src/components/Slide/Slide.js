@@ -26,7 +26,7 @@ class Slide extends React.Component {
         if (this.props.direction === 'left') return `100%`
         return 0
       })()})`,
-      transition: `transform 200ms cubic-bezier(0.4, 0, 0.2, 1)`
+      transition: `transform 250ms cubic-bezier(0.4, 0, 0.2, 1)`
     },
     entering: { transform: `translateX(0) translateY(0)` },
     entered: { transform: `translateX(0) translateY(0)` },
@@ -88,6 +88,6 @@ Slide.propTypes = {
   timeout: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ enter: PropTypes.number, exit: PropTypes.number })])
 }
 
-Slide.defaultProps = { timeout: 200, direction: 'down' }
+Slide.defaultProps = { timeout: 250, direction: 'down' }
 
 export default Slide

@@ -5,7 +5,7 @@ import AppRoutes from './routes'
 
 import Navigation from './components/Navigation'
 import UserMenu from './components/UserMenu'
-import Icon from './components/Icon'
+import { ToastContainer } from './components/Toast'
 
 const AppWrap = styled.div`
   margin-left: ${props => (props.collapsed ? 80 : 280)}px;
@@ -13,24 +13,8 @@ const AppWrap = styled.div`
   transition: 250ms;
 `
 
-const NavToggle = styled.button`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 101;
-  border: 0;
-  background-color: transparent;
-  width: 32px;
-  height: 32px;
-  margin: 16px 24px;
-  padding: 0;
-  outline: 0;
-`
-
 class App extends Component {
-  state = {
-    navCollapsed: false
-  }
+  state = { navCollapsed: false }
 
   render() {
     const { navCollapsed } = this.state
@@ -38,12 +22,10 @@ class App extends Component {
       <div className="App">
         <Router>
           <AppWrap collapsed={navCollapsed}>
-            <Navigation collapsed={navCollapsed} />
-            <NavToggle onClick={() => this.setState({ navCollapsed: !navCollapsed })}>
-              <Icon name="menu" />
-            </NavToggle>
+            <Navigation onChange={navCollapsed => this.setState({ navCollapsed })} />
             <AppRoutes />
             <UserMenu />
+            <ToastContainer />
           </AppWrap>
         </Router>
       </div>

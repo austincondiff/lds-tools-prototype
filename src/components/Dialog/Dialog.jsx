@@ -11,31 +11,31 @@ import styled from 'styled-components'
 const DialogWrap = styled.div`
   background-color: white;
   outline: none;
-  ${props => !props.width && `min-width: 400px;`}
-  ${props => !props.width && `max-width: 640px;`}
+  ${props => !props.width && props.position.x !== 'stretch' && `min-width: 400px;`}
+  ${props => !props.width && props.position.x !== 'stretch' && `max-width: 640px;`}
   ${props => props.width && `width: ${props.width};`}
   box-shadow:
     ${props => {
       if (props.position.x === 'center') return 0
-      if (props.position.x === 'left') return 2
-      if (props.position.x === 'right') return -2
+      if (props.position.x === 'left') return 4
+      if (props.position.x === 'right') return -4
       if (props.position.x === 'stretch') return 0
     }}px ${props => {
-  if (props.position.y === 'center') return 2
-  if (props.position.y === 'top') return 2
-  if (props.position.y === 'bottom') return -2
+  if (props.position.y === 'center') return 4
+  if (props.position.y === 'top') return 4
+  if (props.position.y === 'bottom') return -4
   if (props.position.y === 'stretch') return 0
-}}px 4px rgba(0, 0, 0, 0.15), ${props => {
+}}px 16px rgba(0, 0, 0, 0.2), ${props => {
   if (props.position.x === 'center') return 0
-  if (props.position.x === 'left') return 8
-  if (props.position.x === 'right') return -8
+  if (props.position.x === 'left') return 16
+  if (props.position.x === 'right') return -16
   if (props.position.x === 'stretch') return 0
 }}px ${props => {
-  if (props.position.y === 'center') return 8
-  if (props.position.y === 'top') return 8
-  if (props.position.y === 'bottom') return -8
+  if (props.position.y === 'center') return 16
+  if (props.position.y === 'top') return 16
+  if (props.position.y === 'bottom') return -16
   if (props.position.y === 'stretch') return 0
-}}px 16px rgba(0, 0, 0, 0.15);
+}}px 64px rgba(0, 0, 0, 0.15);
 ${props => props.position.x === 'stretch' && `flex: 1;`}
 `
 const Header = styled.div`
@@ -76,11 +76,9 @@ const DialogActions = styled.div`
   justify-content: flex-end;
 `
 
-// endregion
-
 class Dialog extends React.Component {
   static propTypes = {
-    heading: PropTypes.string.isRequired,
+    title: PropTypes.string,
     onClose: PropTypes.func
   }
 

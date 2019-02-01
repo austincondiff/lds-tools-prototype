@@ -7,16 +7,20 @@ import Icon from '../Icon'
 
 const MenuWrap = styled.div``
 const AvatarWrap = styled.div`
-  position: absolute;
+  position: fixed;
   top: ${props => (props.open ? 112 : 16)}px;
   right: ${props => (props.open ? 92 : 24)}px;
   z-index: 801;
   transition: ${props =>
-    props.open ? `top 200ms ease-out,right 200ms ease-in-out` : `top 200ms ease-out,right 200ms ease-out`};
+    props.open ? `top 250ms 0ms ease-out, right 200ms 50ms ease-out` : `top 250ms 0s ease-out, right 200ms 0s ease-out`};
 `
 const StyledAvatar = styled(Avatar)`
   border: ${props => (props.open ? 8 : 0)}px solid white;
+  width: ${props => (props.open ? 80 : 32)}px;
+  height: ${props => (props.open ? 80 : 32)}px;
+  border-radius: ${props => (props.open ? 80 : 32)}px;
   transition: 200ms ease-in-out;
+  transition-delay: ${props => (props.open ? 50 : 0)}ms;
 `
 const AvatarButton = styled.button`
   padding: 0;
@@ -170,7 +174,7 @@ class UserMenu extends React.Component {
       <MenuWrap>
         <AvatarWrap open={showMenu}>
           <AvatarButton onClick={this.showMenu}>
-            <StyledAvatar open={showMenu} size={showMenu ? 80 : 32} src={'https://randomuser.me/api/portraits/men/33.jpg'} />
+            <StyledAvatar open={showMenu} src={'https://randomuser.me/api/portraits/men/33.jpg'} />
           </AvatarButton>
         </AvatarWrap>
         <Dialog

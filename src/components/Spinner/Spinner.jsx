@@ -1,9 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
 import styled from 'styled-components'
-
-// region Styled Components
 
 const StyledWrapper = styled.span`
   justify-content: center;
@@ -17,12 +14,10 @@ const StyledSVG = styled.svg`
   height: 1em;
 `
 
-// endregion
-
-export default function Spinner({ size, spinnerClassName, ...props }) {
+export default function Spinner({ size }) {
   return (
     <StyledWrapper size={size} aria-hidden="true">
-      <StyledSVG viewBox="0 0 24 24" className={spinnerClassName}>
+      <StyledSVG viewBox="0 0 24 24">
         <path
           opacity="0.2"
           d="M20.5 11a9.5 9.5 0 1 0-19 0 9.5 9.5 0 0 0 19 0zM0 11C0 4.925 4.925 0 11 0s11 4.925 11 11-4.925 11-11 11S0 17.075 0 11z"

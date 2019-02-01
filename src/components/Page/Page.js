@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Breadcrumb from '../Breadcrumb'
 import { TabBox, TabContainer } from '../Tabs'
+import { IconButton } from '../Button'
 import Spinner from '../Spinner'
 
 let PageMargin = styled.div``
@@ -26,19 +27,12 @@ let PageHeader = styled.div`
   align-items: center;
   flex: 1;
 `
-let QuickSearch = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-left: 12px;
-  margin-top: -12px;
-`
-let TitleAndTabs = styled.div`
+let TitleWrap = styled.div`
   align-items: baseline;
   display: flex;
   width: 100%;
 `
-let TItle = styled.div`
+let Title = styled.div`
   font-family: 'Adobe Garamond Pro', Garamond, Georgia, serif;
   font-size: 24px;
   color: #4a5055;
@@ -46,7 +40,13 @@ let TItle = styled.div`
   min-width: max-content;
   margin-top: 4px;
 `
-let TabBar = styled.div`
+let TitleAndBreadcrumbs = styled.div`
+  flex: 1;
+`
+let ActionsWrap = styled.div`
+  margin-right: -16px;
+`
+let TabsWrap = styled.div`
   margin: -16px -16px 0 -16px;
 `
 let SpinnerWrapper = styled.div`
@@ -60,11 +60,11 @@ let SpinnerWrapper = styled.div`
   left: 0;
   z-index: 1000;
 `
-let BreadcrumbWrapper = styled.div`
+let BreadcrumbWrap = styled.div`
   margin-top: 5px;
 `
 let ContentBox = styled.div`
-  padding: 0 80px;
+  /* padding: 0 80px; */
   position: relative;
 `
 
@@ -127,7 +127,7 @@ class Page extends React.Component {
   hasBreadcrumb = breadcrumb => breadcrumb && breadcrumb.length > 0
 
   render() {
-    const { breadcrumbs, children, loading, renderQuickSearch, title, width } = this.props
+    const { breadcrumbs, children, loading, actions, title, width } = this.props
     const { value, tabs, useRouter } = this.state
     const childComponentName = React.Children.toArray(children)[0].type.name
     const hasTabs = children && (childComponentName === 'Tabs' || childComponentName === 'Tabs_Tabs')
@@ -136,19 +136,27 @@ class Page extends React.Component {
       <PageMargin>
         <PageHeaderWrap>
           <PageHeader>
-            <BreadcrumbWrapper>
-              <Breadcrumb breadcrumb={breadcrumbs} />
-            </BreadcrumbWrapper>
-            <TitleAndTabs hasBreadcrumb={this.hasBreadcrumb(breadcrumbs)}>
-              <TItle>{title}</TItle>
-            </TitleAndTabs>
+            <TitleAndBreadcrumbs>
+              <BreadcrumbWrap>
+                <Breadcrumb breadcrumb={breadcrumbs} />
+              </BreadcrumbWrap>
+              <TitleWrap>
+                <Title>{title}</Title>
+              </TitleWrap>
+            </TitleAndBreadcrumbs>
+            <ActionsWrap>
+              {actions && actions}
+              <>
+                <IconButton name="magnify" onClick={() => {}} />
+                <IconButton name="earth" onClick={() => {}} />
+              </>
+            </ActionsWrap>
           </PageHeader>
           {!loading && hasTabs && (
-            <TabBar>
+            <TabsWrap>
               <TabContainer useRouter={useRouter} tabs={tabs} value={value} onChange={value => this.onTabChange(value)} />
-            </TabBar>
+            </TabsWrap>
           )}
-          {renderQuickSearch && <QuickSearch>{renderQuickSearch()}</QuickSearch>}
         </PageHeaderWrap>
         {!loading ? (
           hasTabs ? (

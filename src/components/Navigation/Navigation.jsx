@@ -3,11 +3,31 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Icon from '../Icon'
 import { withRouter, Link } from 'react-router-dom'
+import { IconButton } from '../Button'
 
 import logo from '../../assets/images/logo.svg'
 
 const NavWrap = styled.div`
   position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: ${props => (props.collapsed ? 80 : 280)}px;
+  transition: 250ms;
+  z-index: 200;
+`
+const NavToggle = styled(IconButton).attrs({ name: 'menu' })`
+  position: absolute;
+  top: 12px;
+  left: calc(100% + 20px);
+  z-index: 198;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+  outline: 0;
+`
+const Nav = styled.div`
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
@@ -79,7 +99,14 @@ const NavItems = styled.ul`
   margin-top: ${props => (props.collapsed ? -16 : 0)}px;
   transition: 250ms;
 `
-const NavItem = styled(Link)`
+const NavItem = styled.div`
+  display: flex;
+  height: 40px;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+`
+const NavItemLink = styled(Link)`
   display: flex;
   height: 40px;
   align-items: center;
@@ -90,7 +117,7 @@ const NavItemIconWrap = styled.div`
   color: white;
   opacity: 0.5;
   transition: opacity 200ms, padding 250ms;
-  ${NavItem}.active &, ${NavItem}:hover & {
+  ${NavItem}.active &, ${NavItem}:hover &, ${NavItemLink}.active &, ${NavItemLink}:hover & {
     opacity: 1;
   }
 `
@@ -104,7 +131,7 @@ const NavItemLabel = styled.div`
   letter-spacing: 0;
   text-align: left;
   transition: 200ms;
-  ${NavItem}.active &, ${NavItem}:hover & {
+  ${NavItem}.active &, ${NavItem}:hover &, ${NavItemLink}.active &, ${NavItemLink}:hover & {
     opacity: ${props => (props.collapsed ? 0 : 1)};
   }
 `
@@ -117,6 +144,7 @@ const ActiveItemIndicator = styled.div`
   background-color: #01b6d1;
   transition: 200ms;
 `
+
 const FlairWrap = styled.div`
   position: absolute;
   margin-bottom: -85%;
@@ -170,6 +198,82 @@ const Flair3 = styled.div`
   ${props => props.active && `transition-delay: 100ms;`}
 `
 
+const SubItemsList = styled.ul`
+  list-style: none;
+  padding: 0;
+  ${props => !props.open && `display: none;`}
+`
+const SubItem = styled.div`
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #cccccc;
+  padding: 8px 8px 8px 64px;
+`
+const SubItemLink = styled(Link)`
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #cccccc;
+  padding: 8px 8px 8px 64px;
+`
+
+const Menu = styled.div`
+  background: #1a2025;
+  height: 100vh;
+  position: absolute;
+  left: 100%;
+  z-index: 199;
+  overflow: hidden;
+`
+const MenuInside = styled.div`
+  padding: 24px;
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`
+const MenuLabel = styled.h3`
+  font-family: 'Adobe Garamond Pro', Garamond, Georgia, serif;
+  font-size: 24px;
+  font-weight: normal;
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+  padding: 24px;
+`
+const MenuCategories = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+`
+const MenuCategory = styled.div`
+  padding: 24px;
+`
+const MenuCategoryLabel = styled.h4`
+  opacity: 0.6;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.92px;
+  text-transform: uppercase;
+  margin: 0;
+  margin-bottom: 12px;
+`
+const MenuItems = styled.div``
+const MenuItem = styled.div``
+const MenuItemLink = styled(Link)`
+  display: block;
+  opacity: 0.85;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 8px 0;
+`
+
 const navData = [
   {
     id: 'dashboard',
@@ -218,26 +322,340 @@ const navData = [
     icon: 'index-card',
     label: 'Indexing',
     route: '/indexing'
+  },
+  {
+    id: 'unit-banking-services',
+    icon: 'clipboard-check',
+    label: 'Unit Banking Services',
+    route: '/unit-banking-services',
+    items: [
+      {
+        id: 'approvals',
+        label: 'Approvals',
+        route: '/approvals',
+        menu: {
+          id: 'approvals',
+          label: 'Approvals',
+          categories: [
+            {
+              id: 'transactions',
+              label: 'Transactions',
+              route: '/transactions',
+              items: [
+                {
+                  id: 'donations',
+                  label: 'Donationss',
+                  route: '/donationstions'
+                },
+                {
+                  id: 'disbursements',
+                  label: 'Disbursementss',
+                  route: '/disbursementsments'
+                },
+                {
+                  id: 'adjustments',
+                  label: 'Adjustments',
+                  route: '/adjustmentsons'
+                },
+                {
+                  id: 'distributions',
+                  label: 'Distributions',
+                  route: '/distributionss'
+                },
+                {
+                  id: 'reversals',
+                  label: 'Reversalss',
+                  route: '/reversalstions'
+                },
+                {
+                  id: 'transfers',
+                  label: 'Transfers',
+                  route: '/transfers'
+                },
+                {
+                  id: 'teller-entries',
+                  label: 'Teller Entries',
+                  route: '/teller-entries'
+                },
+                {
+                  id: 'standing-instructions',
+                  label: 'Standing Instructions',
+                  route: '/standing-instructions'
+                },
+                {
+                  id: 'gift-aid-claims',
+                  label: 'Gift Aid Claims',
+                  route: '/gift-aid-claims'
+                }
+              ]
+            },
+            {
+              id: 'transactions',
+              label: 'Transactions',
+              route: '/transactions',
+              items: [
+                {
+                  id: 'donations',
+                  label: 'Donationss',
+                  route: '/donationstions'
+                },
+                {
+                  id: 'disbursements',
+                  label: 'Disbursementss',
+                  route: '/disbursementsments'
+                },
+                {
+                  id: 'adjustments',
+                  label: 'Adjustments',
+                  route: '/adjustmentsons'
+                },
+                {
+                  id: 'distributions',
+                  label: 'Distributions',
+                  route: '/distributionss'
+                },
+                {
+                  id: 'reversals',
+                  label: 'Reversalss',
+                  route: '/reversalstions'
+                },
+                {
+                  id: 'transfers',
+                  label: 'Transfers',
+                  route: '/transfers'
+                },
+                {
+                  id: 'teller-entries',
+                  label: 'Teller Entries',
+                  route: '/teller-entries'
+                },
+                {
+                  id: 'standing-instructions',
+                  label: 'Standing Instructions',
+                  route: '/standing-instructions'
+                },
+                {
+                  id: 'gift-aid-claims',
+                  label: 'Gift Aid Claims',
+                  route: '/gift-aid-claims'
+                }
+              ]
+            },
+            {
+              id: 'transactions',
+              label: 'Transactions',
+              route: '/transactions',
+              items: [
+                {
+                  id: 'donations',
+                  label: 'Donationss',
+                  route: '/donationstions'
+                },
+                {
+                  id: 'disbursements',
+                  label: 'Disbursementss',
+                  route: '/disbursementsments'
+                },
+                {
+                  id: 'adjustments',
+                  label: 'Adjustments',
+                  route: '/adjustmentsons'
+                },
+                {
+                  id: 'distributions',
+                  label: 'Distributions',
+                  route: '/distributionss'
+                },
+                {
+                  id: 'reversals',
+                  label: 'Reversalss',
+                  route: '/reversalstions'
+                },
+                {
+                  id: 'transfers',
+                  label: 'Transfers',
+                  route: '/transfers'
+                },
+                {
+                  id: 'teller-entries',
+                  label: 'Teller Entries',
+                  route: '/teller-entries'
+                },
+                {
+                  id: 'standing-instructions',
+                  label: 'Standing Instructions',
+                  route: '/standing-instructions'
+                },
+                {
+                  id: 'gift-aid-claims',
+                  label: 'Gift Aid Claims',
+                  route: '/gift-aid-claims'
+                }
+              ]
+            },
+            {
+              id: 'transactions',
+              label: 'Transactions',
+              route: '/transactions',
+              items: [
+                {
+                  id: 'donations',
+                  label: 'Donationss',
+                  route: '/donationstions'
+                },
+                {
+                  id: 'disbursements',
+                  label: 'Disbursementss',
+                  route: '/disbursementsments'
+                },
+                {
+                  id: 'adjustments',
+                  label: 'Adjustments',
+                  route: '/adjustmentsons'
+                },
+                {
+                  id: 'distributions',
+                  label: 'Distributions',
+                  route: '/distributionss'
+                },
+                {
+                  id: 'reversals',
+                  label: 'Reversalss',
+                  route: '/reversalstions'
+                },
+                {
+                  id: 'transfers',
+                  label: 'Transfers',
+                  route: '/transfers'
+                },
+                {
+                  id: 'teller-entries',
+                  label: 'Teller Entries',
+                  route: '/teller-entries'
+                },
+                {
+                  id: 'standing-instructions',
+                  label: 'Standing Instructions',
+                  route: '/standing-instructions'
+                },
+                {
+                  id: 'gift-aid-claims',
+                  label: 'Gift Aid Claims',
+                  route: '/gift-aid-claims'
+                }
+              ]
+            },
+            {
+              id: 'transactions',
+              label: 'Transactions',
+              route: '/transactions',
+              items: [
+                {
+                  id: 'donations',
+                  label: 'Donationss',
+                  route: '/donationstions'
+                },
+                {
+                  id: 'disbursements',
+                  label: 'Disbursementss',
+                  route: '/disbursementsments'
+                },
+                {
+                  id: 'adjustments',
+                  label: 'Adjustments',
+                  route: '/adjustmentsons'
+                },
+                {
+                  id: 'distributions',
+                  label: 'Distributions',
+                  route: '/distributionss'
+                },
+                {
+                  id: 'reversals',
+                  label: 'Reversalss',
+                  route: '/reversalstions'
+                },
+                {
+                  id: 'transfers',
+                  label: 'Transfers',
+                  route: '/transfers'
+                },
+                {
+                  id: 'teller-entries',
+                  label: 'Teller Entries',
+                  route: '/teller-entries'
+                },
+                {
+                  id: 'standing-instructions',
+                  label: 'Standing Instructions',
+                  route: '/standing-instructions'
+                },
+                {
+                  id: 'gift-aid-claims',
+                  label: 'Gift Aid Claims',
+                  route: '/gift-aid-claims'
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
   }
 ]
 
-const Item = ({ icon, label, route, itemRef, active, collapsed }) => (
-  <li ref={itemRef}>
-    <NavItem to={route} className={active && 'active'}>
-      <NavItemIconWrap collapsed={collapsed}>
-        <Icon name={icon} />
-      </NavItemIconWrap>
-      <NavItemLabel collapsed={collapsed}>{label}</NavItemLabel>
-    </NavItem>
-  </li>
-)
+const Item = ({ id, icon, label, route, itemRef, active, collapsed, items, setFocusedItemId, focusedItemId, setMenu }) => {
+  const NavItemComponent = items ? NavItem : NavItemLink
+
+  return (
+    <li ref={itemRef}>
+      <NavItemComponent
+        to={!items ? route : null}
+        as={items && 'div'}
+        items={items}
+        onClick={() => setFocusedItemId(items ? id : null)}
+        className={active && 'active'}
+      >
+        <NavItemIconWrap collapsed={collapsed}>
+          <Icon name={icon} />
+        </NavItemIconWrap>
+        <NavItemLabel collapsed={collapsed}>{label}</NavItemLabel>
+      </NavItemComponent>
+      {items && (
+        <SubItemsList open={focusedItemId === id}>
+          {items.map(subItem => {
+            const SubItemComponent = subItem.menu ? SubItem : SubItemLink
+
+            return (
+              <li key={subItem.id}>
+                <SubItemComponent
+                  to={!subItem.menu ? subItem.route : null}
+                  onClick={e => {
+                    if (subItem.menu) {
+                      e.preventDefault()
+                      setMenu(subItem.menu)
+                    }
+                  }}
+                >
+                  {subItem.label}
+                </SubItemComponent>
+              </li>
+            )
+          })}
+        </SubItemsList>
+      )}
+    </li>
+  )
+}
 
 class Navigation extends React.Component {
   state = {
     mounted: false,
+    collapsed: false,
     activeItemHeight: null,
     activeItemPosition: null,
-    activeItem: null
+    activeItem: null,
+    focusedItemId: null
   }
 
   navItemRefs = {}
@@ -261,40 +679,73 @@ class Navigation extends React.Component {
     this.setState({ activeItem, activeItemHeight: activeItemEl.offsetHeight, activeItemPosition: activeItemEl.offsetTop })
   }
 
+  setMenu = menu => {
+    this.setState({ menu }, () => console.log({ menu }))
+  }
+
   render() {
-    const { collapsed } = this.props
-    const { mounted = false, activeItem, activeItemHeight, activeItemPosition } = this.state
+    const { onChange } = this.props
+    const { collapsed, mounted = false, activeItem, activeItemHeight, activeItemPosition, focusedItemId, menu } = this.state
 
     return (
       <NavWrap active={mounted} collapsed={collapsed}>
-        <LogoWrap collapsed={collapsed}>
-          <img src={logo} className="App-logo" alt="logo" />
-        </LogoWrap>
-        <NavSearchWrap collapsed={collapsed}>
-          <NavSearch collapsed={collapsed} />
-          <NavSearchIcon collapsed={collapsed} />
-        </NavSearchWrap>
-        <NavItems collapsed={collapsed}>
-          {navData.map(item => (
-            <Item
-              key={item.id}
-              icon={item.icon}
-              label={item.label}
-              route={item.route}
-              active={activeItem && item.id === activeItem.id}
-              collapsed={collapsed}
-              itemRef={el => {
-                this.navItemRefs[`item_${item.id}`] = el
-              }}
-            />
-          ))}
-          <ActiveItemIndicator height={activeItemHeight} position={activeItemPosition} />
-        </NavItems>
-        <FlairWrap active={mounted}>
-          <Flair1 active={mounted} />
-          <Flair2 active={mounted} />
-          <Flair3 active={mounted} />
-        </FlairWrap>
+        <Nav active={mounted} collapsed={collapsed}>
+          <LogoWrap collapsed={collapsed}>
+            <img src={logo} className="App-logo" alt="logo" />
+          </LogoWrap>
+          <NavSearchWrap collapsed={collapsed}>
+            <NavSearch collapsed={collapsed} />
+            <NavSearchIcon collapsed={collapsed} />
+          </NavSearchWrap>
+          <NavItems collapsed={collapsed}>
+            {navData.map(item => (
+              <Item
+                key={item.id}
+                id={item.id}
+                icon={item.icon}
+                label={item.label}
+                route={item.route}
+                active={activeItem && item.id === activeItem.id}
+                collapsed={collapsed}
+                items={item.items}
+                itemRef={el => {
+                  this.navItemRefs[`item_${item.id}`] = el
+                }}
+                setFocusedItemId={focusedItemId => this.setState({ focusedItemId, menu: null })}
+                focusedItemId={focusedItemId}
+                setMenu={this.setMenu}
+              />
+            ))}
+            <ActiveItemIndicator height={activeItemHeight} position={activeItemPosition} />
+          </NavItems>
+          <FlairWrap active={mounted}>
+            <Flair1 active={mounted} />
+            <Flair2 active={mounted} />
+            <Flair3 active={mounted} />
+          </FlairWrap>
+        </Nav>
+        {menu && (
+          <Menu>
+            <MenuInside>
+              <MenuLabel>{menu.label}</MenuLabel>
+              <MenuCategories>
+                {menu.categories.map(cat => (
+                  <MenuCategory key={cat.id}>
+                    <MenuCategoryLabel>{cat.label}</MenuCategoryLabel>
+                    {cat.items.map(catItem => (
+                      <MenuItems key={catItem.id}>
+                        <MenuItem>
+                          <MenuItemLink to={catItem.route}>{catItem.label}</MenuItemLink>
+                        </MenuItem>
+                      </MenuItems>
+                    ))}
+                  </MenuCategory>
+                ))}
+              </MenuCategories>
+            </MenuInside>
+          </Menu>
+        )}
+        <NavToggle onClick={() => this.setState({ collapsed: !collapsed }, () => onChange(this.state.collapsed))} />
       </NavWrap>
     )
   }

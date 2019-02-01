@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import styled from 'styled-components'
 
-import ProgressBar from './ProgressBar'
+import LinearProgress from '../LinearProgress'
+import Icon from '../Icon'
 import { POSITION, TYPE } from '../../utils/constants'
 import { falseOrElement, falseOrDelay, objectValues } from '../../utils/propValidator'
 
@@ -16,6 +18,79 @@ function getY(e) {
 
 const noop = () => {}
 
+const ToastWrap = styled.div`
+  padding-bottom: 16px;
+  &:hover {
+    position: relative;
+    z-index: 1;
+  }
+`
+const ToastInside = styled.div`
+  position: relative;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 1px;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15), 0 4px 16px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  max-height: 800px;
+  overflow: hidden;
+  font-family: 'Proxima Nova', sans-serif;
+  cursor: pointer;
+  direction: ltr;
+  margin-right: 24px;
+  transition: 200ms;
+  ${ToastWrap}:hover & {
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2), 0 16px 64px 0 rgba(0, 0, 0, 0.15);
+  }
+`
+const ToastContentWrap = styled.div`
+  display: flex;
+`
+const ToastContent = styled.div`
+  flex: 1;
+  padding: 22px 24px;
+  align-self: center;
+`
+const ToastActions = styled.div`
+  padding: 12px;
+  opacity: 0.5;
+  transition: 200ms;
+  ${ToastWrap}:hover & {
+    opacity: ;
+  }
+`
+const Title = styled.h4`
+  padding: 0;
+  margin: 0 0 ${props => (props.hasContent ? '8px' : 0)} 0;
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+`
+const Content = styled.div`
+  font-family: 'Proxima Nova', sans-serif;
+  font-size: 14px;
+  line-height: 1.25;
+`
+const IconWrap = styled.div`
+  background-color: ${props => {
+    if (props.type === TYPE.SUCCESS) return '#E5F6E8'
+    if (props.type === TYPE.WARNING) return '#FEF3E2'
+    if (props.type === TYPE.ERROR) return '#F9E8E8'
+    return '#D4ECF0'
+  }};
+  color: ${props => {
+    if (props.type === TYPE.SUCCESS) return '#235C35'
+    if (props.type === TYPE.WARNING) return '#D07A00'
+    if (props.type === TYPE.ERROR) return '#B80A0A'
+    return '#006184'
+  }};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+`
+
 class Toast extends Component {
   static propTypes = {
     closeButton: falseOrElement.isRequired,
@@ -27,8 +102,6 @@ class Toast extends Component {
     pauseOnFocusLoss: PropTypes.bool.isRequired,
     closeOnClick: PropTypes.bool.isRequired,
     transition: PropTypes.func.isRequired,
-    rtl: PropTypes.bool.isRequired,
-    hideProgressBar: PropTypes.bool.isRequired,
     draggable: PropTypes.bool.isRequired,
     draggablePercent: PropTypes.number.isRequired,
     in: PropTypes.bool,
@@ -81,14 +154,7 @@ class Toast extends Component {
   componentDidMount() {
     this.props.onOpen(this.props.children.props)
 
-    if (this.props.draggable) {
-      this.bindDragEvents()
-    }
-
-    // Maybe I could bind the event in the ToastContainer and rely on delegation
-    if (this.props.pauseOnFocusLoss) {
-      this.bindFocusEvents()
-    }
+    if (this.props.draggable) this.bindDragEvents()
   }
 
   componentDidUpdate(prevProps) {
@@ -99,36 +165,12 @@ class Toast extends Component {
         this.unbindDragEvents()
       }
     }
-
-    if (prevProps.pauseOnFocusLoss !== this.props.pauseOnFocusLoss) {
-      if (this.props.pauseOnFocusLoss) {
-        this.bindFocusEvents()
-      } else {
-        this.unbindFocusEvents()
-      }
-    }
   }
 
   componentWillUnmount() {
     this.props.onClose(this.props.children.props)
 
-    if (this.props.draggable) {
-      this.unbindDragEvents()
-    }
-
-    if (this.props.pauseOnFocusLoss) {
-      this.unbindFocusEvents()
-    }
-  }
-
-  bindFocusEvents() {
-    window.addEventListener('focus', this.playToast)
-    window.addEventListener('blur', this.pauseToast)
-  }
-
-  unbindFocusEvents() {
-    window.removeEventListener('focus', this.playToast)
-    window.removeEventListener('blur', this.pauseToast)
+    if (this.props.draggable) this.unbindDragEvents()
   }
 
   bindDragEvents() {
@@ -147,18 +189,6 @@ class Toast extends Component {
     document.removeEventListener('touchend', this.onDragEnd)
   }
 
-  pauseToast = () => {
-    if (this.props.autoClose) {
-      this.setState({ isRunning: false })
-    }
-  }
-
-  playToast = () => {
-    if (this.props.autoClose) {
-      this.setState({ isRunning: true })
-    }
-  }
-
   onDragStart = e => {
     this.flag.canCloseOnClick = true
     this.flag.canDrag = true
@@ -172,7 +202,7 @@ class Toast extends Component {
   onDragMove = e => {
     if (this.flag.canDrag) {
       if (this.state.isRunning) {
-        this.pauseToast()
+        this.props.pauseToast()
       }
 
       this.drag.x = getX(e)
@@ -201,19 +231,8 @@ class Toast extends Component {
       }
 
       this.drag.y = getY(e)
-      this.ref.style.transition = 'transform 0.2s, opacity 0.2s'
       this.ref.style.transform = 'translateX(0)'
       this.ref.style.opacity = 1
-    }
-  }
-
-  onDragTransitionEnd = () => {
-    const { top, bottom, left, right } = this.ref.getBoundingClientRect()
-
-    if (this.props.pauseOnHover && this.drag.x >= left && this.drag.x <= right && this.drag.y >= top && this.drag.y <= bottom) {
-      this.pauseToast()
-    } else {
-      this.playToast()
     }
   }
 
@@ -222,47 +241,22 @@ class Toast extends Component {
       closeButton,
       children,
       autoClose,
-      pauseOnHover,
-      closeOnClick,
       type,
-      hideProgressBar,
       closeToast,
+      title,
       transition: Transition,
       position,
       onExited,
-      className,
+      onClick,
       bodyClassName,
-      progressClassName,
-      progressStyle,
-      updateId,
-      role,
-      progress,
-      isProgressDone,
-      rtl
+      role
     } = this.props
 
-    const toastProps = {
-      className: cx(
-        'Toastify__toast',
-        `Toastify__toast--${type}`,
-        {
-          'Toastify__toast--rtl': rtl
-        },
-        className
-      )
-    }
+    let icon = 'information-outline'
 
-    if (autoClose && pauseOnHover) {
-      toastProps.onMouseEnter = this.pauseToast
-      toastProps.onMouseLeave = this.playToast
-    }
-
-    // prevent toast from closing when user drags the toast
-    if (closeOnClick) {
-      toastProps.onClick = () => this.flag.canCloseOnClick && closeToast()
-    }
-
-    const controlledProgress = parseFloat(progress) === progress
+    if (type === TYPE.SUCCESS) icon = 'check-circle-outline'
+    if (type === TYPE.WARNING) icon = 'alert-outline'
+    if (type === TYPE.ERROR) icon = 'alert-circle-outline'
 
     return (
       <Transition
@@ -273,35 +267,43 @@ class Toast extends Component {
         position={position}
         preventExitTransition={this.state.preventExitTransition}
         direction="left"
+        el={this.state.el}
       >
-        <div
-          {...toastProps}
-          ref={ref => (this.ref = ref)}
-          onMouseDown={this.onDragStart}
-          onTouchStart={this.onDragStart}
-          onTransitionEnd={this.onDragTransitionEnd}
-        >
-          <div {...this.props.in && { role: role }} className={cx('Toastify__toast-body', bodyClassName)}>
-            {children}
-          </div>
-          {closeButton && closeButton}
-          {(autoClose || controlledProgress) && (
-            <ProgressBar
-              {...(updateId && !controlledProgress ? { key: `pb-${updateId}` } : {})}
-              rtl={rtl}
-              delay={autoClose}
-              isRunning={this.state.isRunning}
-              closeToast={closeToast}
-              hide={hideProgressBar}
-              type={type}
-              style={progressStyle}
-              className={progressClassName}
-              controlledProgress={controlledProgress}
-              isProgressDone={isProgressDone}
-              progress={progress}
-            />
-          )}
-        </div>
+        <ToastWrap>
+          <ToastInside
+            onClick={e => {
+              onClick && onClick(e)
+              this.flag.canCloseOnClick && closeToast()
+            }}
+            ref={ref => {
+              console.log(this.ref)
+              !this.ref && !this.state.el && this.setState({ el: ref })
+              return (this.ref = ref)
+            }}
+            onMouseDown={this.onDragStart}
+            onTouchStart={this.onDragStart}
+          >
+            <ToastContentWrap {...this.props.in && { role: role }} className={cx('Toastify__toast-body', bodyClassName)}>
+              <IconWrap type={type}>
+                <Icon name={icon} />
+              </IconWrap>
+              <ToastContent>
+                {title && <Title hasContent={children}>{title}</Title>}
+                {children && <Content>{children}</Content>}
+              </ToastContent>
+              <ToastActions>{closeButton && closeButton}</ToastActions>
+            </ToastContentWrap>
+            {autoClose && (
+              <LinearProgress
+                countdown={autoClose}
+                pauseCountdown={!this.props.isRunning}
+                onCountdown={closeToast}
+                closeToast={closeToast}
+                type={type}
+              />
+            )}
+          </ToastInside>
+        </ToastWrap>
       </Transition>
     )
   }

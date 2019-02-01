@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const Box = styled.div`
-  padding: 0 80px;
+  /* padding: 0 80px; */
   position: relative;
 `
 
